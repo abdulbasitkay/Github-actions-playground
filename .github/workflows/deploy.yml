@@ -21,69 +21,16 @@ jobs:
         
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '14'
+      - run: npm help
+      - run: yarn install && yarn build
           
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.10.0
         with:
           push: true
-          tags: ghcr.io/abdulbasitkay/play:${{github.run_number}}
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     PATH: /usr/local/bin:/usr/bin:/bin
+          tags: ghcr.io/abdulbasitkay/play:${{github.run_number}} # edit
 
-  #   steps:
-  #     # Checkout the repository content to GitHub runne
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v2
-
-  #     # Connect to DigitalOcean Droplet via SSH
-  #     - name: Connect to DigitalOcean Droplet
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.DROPLET_HOST }}
-  #         username: ${{ secrets.DROPLET_USERNAME }}
-  #         password: ${{ secrets.DROPLET_PASSWORD }}
-  #         port: ${{ secrets.DROPLET_SSH_PORT }}
-  #         script: |
-  #           PATH=$PATH:/${{secrets.DROPLET_USERNAME}}/.npm-global/bin
-  #           pm2 -v
-  #     - name: Debug - Print Current Directory
-  #       run: pwd
-
-  #     # Fetch the latest changes from github origin
-  #     - name: Fetch latest changes from origin
-  #       run: git fetch origin
-
-  #     # Merge changes from staging into main
-  #     - name: Merge changes from staging into main
-  #       run: git merge origin/main --commit --no-edit
-
-  #     # Install dependencies and build the projec
-  #     - name: Yarn install
-  #       run: yarn install
-
-  #     - name: Yarn build project
-  #       run: yarn build
-
-  #     - name: SCP Files 
-  #       uses: appleboy/scp-action@v0.1.7
-  #       with:
-  #         host: ${{ secrets.DROPLET_HOST }}
-  #         username: ${{ secrets.DROPLET_USERNAME }}
-  #         password: ${{ secrets.DROPLET_PASSWORD }}
-  #         port: ${{ secrets.DROPLET_SSH_PORT }}
-  #         rm: true
-  #         source: "./*"
-  #         target: /root/aptfuel-api-latest  
-        
-  #     - name: PM2 RESTART
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.DROPLET_HOST }}
-  #         username: ${{ secrets.DROPLET_USERNAME }}
-  #         password: ${{ secrets.DROPLET_PASSWORD }}
-  #         port: ${{ secrets.DROPLET_SSH_PORT }}
-  #         script: |
-  #           PATH=$PATH:/${{secrets.DROPLET_USERNAME}}/.npm-global/bin
-  #           pm2 restart 0
